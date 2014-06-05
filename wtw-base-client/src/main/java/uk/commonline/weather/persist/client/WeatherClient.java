@@ -1,4 +1,4 @@
-package org.whatever.weather.persist.client;
+package uk.commonline.weather.persist.client;
 
 import static org.springframework.util.Assert.notNull;
 

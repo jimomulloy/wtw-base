@@ -1,4 +1,4 @@
-package org.whatever.weather.persist.client;
+package uk.commonline.weather.persist.client;
 
 import static org.springframework.util.Assert.notNull;
 
@@ -54,6 +54,14 @@ public class LocationClient {
 		log.info("Created package: {}", uri);
 	}
 	
+	/**
+	 * @return all packages, sorted
+	 */
+	public Location getLocation(Long id) {
+		return template
+			.getForObject(getLocationsUrl() + "?format=xml", Location.class, id);
+	}
+
 	/**
 	 * @return all packages, sorted
 	 */

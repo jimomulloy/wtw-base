@@ -1,4 +1,4 @@
-package org.whatever.weather.persist.client;
+package uk.commonline.weather.persist.client;
 
 import org.springframework.web.client.RestTemplate;
 
