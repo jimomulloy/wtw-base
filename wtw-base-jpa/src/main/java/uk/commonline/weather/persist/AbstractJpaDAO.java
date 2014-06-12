@@ -47,7 +47,7 @@ public abstract class AbstractJpaDAO<T extends EI<T>> implements Dao<T>{
 	//}
 
 	@Override
-	public T get(Serializable id) {
+	public T get(Long id) {
 		notNull(id, "id can't be null");
 		
 		// This returns null when the object doesn't exist
@@ -55,7 +55,7 @@ public abstract class AbstractJpaDAO<T extends EI<T>> implements Dao<T>{
 	}
 
 	@Override
-	public T load(Serializable id) {
+	public T load(Long id) {
 		notNull(id, "id can't be null");
 		
 		T entity = get(id);
@@ -80,7 +80,7 @@ public abstract class AbstractJpaDAO<T extends EI<T>> implements Dao<T>{
 	}
 
 	@Override
-	public void deleteById(Serializable id) {
+	public void deleteById(Long id) {
 		notNull(id, "id can't be null");
 		entityManager
 			.createQuery("delete from " + clazz.getName() + " where id = :id")
@@ -103,7 +103,7 @@ public abstract class AbstractJpaDAO<T extends EI<T>> implements Dao<T>{
 	}
 
 	@Override
-	public boolean exists(Serializable id) {
+	public boolean exists(Long id) {
 		notNull(id, "id can't be null");
 		return (get(id) != null);
 	}

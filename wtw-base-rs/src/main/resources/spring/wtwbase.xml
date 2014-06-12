@@ -21,15 +21,9 @@
         http://www.springframework.org/schema/mvc 
              http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd"
 	default-lazy-init="false">
-
-	<!--context:component-scan base-package="uk.commonline" /-->
-
-	<!--bean id="locationController" class="uk.commonline.weather.persist.jaxrs.LocationController">
-		<property name="locationDAO" ref="locationDAO" />
-	</bean-->
 	
-	<bean class="uk.commonline.weather.persist.jaxrs.LocationController"/>
+	<bean class="uk.commonline.weather.persist.jaxrs.LocationDataRestService"/>
 	
-	<bean class="uk.commonline.weather.persist.jaxrs.WeatherController"/>
+	<bean class="uk.commonline.weather.persist.jaxrs.WeatherDataRestService"/>
 	
 </beans>

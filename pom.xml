@@ -13,6 +13,7 @@
 	<name>Whatever Weather -  Database application parent</name>
 	<modules>
 		<module>wtw-base-jpa</module>
+		<module>wtw-base-service</module>
 		<module>wtw-base-rs</module>
 		<module>wtw-base-client</module>
 	</modules>
