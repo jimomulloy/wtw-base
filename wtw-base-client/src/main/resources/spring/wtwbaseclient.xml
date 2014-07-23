@@ -37,5 +37,9 @@
 	<bean id="weatherDAO" class="uk.commonline.weather.persist.client.jaxrs.WeatherDaoClient">
 		<property name="restClient" ref="restClient" />
 	</bean>
+	
+	<bean id="weatherForecastDAO" class="uk.commonline.weather.persist.client.jaxrs.WeatherForecastDaoClient">
+		<property name="restClient" ref="restClient" />
+	</bean>
 
 </beans>

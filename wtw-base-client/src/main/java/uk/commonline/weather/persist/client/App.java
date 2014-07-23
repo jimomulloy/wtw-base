@@ -15,11 +15,12 @@ public class App
         System.out.println( "Hello World! Create Rosendale!" );
         LocationClient client = new LocationClient(new RestTemplate(), "http://localhost:8080/wtw/");
         Location location = new Location();
-        location.setCity("London");
+        location.setName("London");
+        location.setType("city");
         location.setCountry("UK");
         location.setRegion("Rosendale");
-        location.setZip("SE21 8LW");
-		client.createLocation(location);
+        location.setPostal("SE21 8LW");
+	client.createLocation(location);
         
     }
 }

@@ -7,8 +7,8 @@ import uk.commonline.weather.model.Weather;
 
 public interface WeatherDataService {
 
-	//@Path("recent")
-	//@POST
-	List<Weather> recentForLocation(final Location location);
+    // @Path("recent")
+    // @POST
+    List<Weather> recentForRegion(final long region);
 
 }

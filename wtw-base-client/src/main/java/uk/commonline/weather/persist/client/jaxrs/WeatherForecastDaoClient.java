@@ -8,16 +8,16 @@ import javax.ws.rs.core.MediaType;
 
 import uk.commonline.data.client.jaxrs.AbstractCrudClient;
 import uk.commonline.data.client.jaxrs.RestClient;
-import uk.commonline.weather.base.service.WeatherDataService;
-import uk.commonline.weather.model.Weather;
+import uk.commonline.weather.base.service.WeatherForecastDataService;
+import uk.commonline.weather.model.WeatherForecast;
 import uk.commonline.weather.model.WeatherListMessenger;
 import uk.commonline.weather.model.WeatherMessenger;
 import uk.commonline.weather.model.WeatherReportMessenger;
-import uk.commonline.weather.persist.WeatherDAO;
+import uk.commonline.weather.persist.WeatherForecastDAO;
 
 /**
  */
-public class WeatherDaoClient extends AbstractCrudClient<Weather> implements WeatherDAO, WeatherDataService {
+public class WeatherForecastDaoClient extends AbstractCrudClient<WeatherForecast> implements WeatherForecastDAO, WeatherForecastDataService {
 
     public void setRestClient(RestClient restClient) {
 	super.setRestClient(restClient);
@@ -28,16 +28,16 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     }
 
     protected String getPath() {
-	return "weather";
+	return "forecast";
     }
 
     @Override
-    public List<Weather> recentForRegion(long region) {
-	GenericType<List<Weather>> list = new GenericType<List<Weather>>() {
+    public List<WeatherForecast> recentForRegion(long region) {
+	GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
 	};
 	WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
 		.target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("recent");
-	List<Weather> entities = target.resolveTemplate("region", region).request(MediaType.APPLICATION_JSON).get(list);
+	List<WeatherForecast> entities = target.resolveTemplate("region", region).request(MediaType.APPLICATION_JSON).get(list);
 	return entities;
     }
 }
