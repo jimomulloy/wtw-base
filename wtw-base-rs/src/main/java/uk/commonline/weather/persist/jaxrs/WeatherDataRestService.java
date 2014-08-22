@@ -1,10 +1,12 @@
 package uk.commonline.weather.persist.jaxrs;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,90 +34,110 @@ import uk.commonline.weather.persist.WeatherDAO;
 @Path("/weather")
 @Transactional
 public class WeatherDataRestService extends AbstractCrudService<Weather> /*
-									  * implements
-									  * WeatherDataService
-									  */{
+                                                                          * implements
+                                                                          * WeatherDataService
+                                                                          */{
 
     @Autowired
     WeatherDAO weatherDAO;
 
     @Override
     protected Dao<Weather> getService() {
-	return weatherDAO;
+        return weatherDAO;
     }
 
     public void setWeatherDAO(WeatherDAO weatherDAO) {
-	this.weatherDAO = weatherDAO;
+        this.weatherDAO = weatherDAO;
     }
 
     public Class<Weather> getEiClass() {
-	return Weather.class;
+        return Weather.class;
     }
 
-    @Path("recent")
+    @Path("recent/region/{region}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Weather> recentForRegion(@PathParam("region") long region) {
-	return weatherDAO.recentForRegion(region);
+        List<Weather> weathers = weatherDAO.recentForRegion(region);
+        return weathers;
+    }
+
+    @Path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Weather> getRange(@PathParam("region") long region, @PathParam("fromTime") String fromTime, @PathParam("hours") int hours, @PathParam("count") int count) {
+      
+        return weatherDAO.getRange(region, getDateFromString(fromTime), hours, count);
+    }
+    
+    private Date getDateFromString(String dateString) {
+        try {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date date = df.parse(dateString);
+            return date;
+        } catch (ParseException e) {
+            //WebApplicationException ...("Date format should be yyyy-MM-dd'T'HH:mm:ss", Status.BAD_REQUEST);
+            return new Date(); 
+        }
     }
     
     @Path("test")
     @GET
     public List<Weather> test() {
-	List<Weather> w = new ArrayList<Weather>();
-	Weather weather = new Weather();
-	Condition condition = new Condition();
-	condition.setText("text");
-	condition.setDescription("text");
-	condition.setIcon("text");
-	condition.setMinTemp(20);
-	condition.setMaxTemp(30);
-	condition.setCode("text");
-	String valuee = "";
-	try {
-	    // valuee =
-	    // xPath.compile("/rss/channel/item/condition/@date").evaluate(response);
-	    // Date condDate = new
-	    // SimpleDateFormat("E, dd MMM yyyy HH:mm a z").parse(valuee);
-	    // condition.setFromTime(condDate);
-	    // condition.setToTime(condDate);
-	    condition.setFromTime(new Date());
-	    condition.setToTime(new Date());
-	} catch (Exception e) {
-	    System.out.println("Date :" + valuee + ", Error::" + e);
-	    e.printStackTrace();
-	    condition.setFromTime(new Date());
-	    condition.setToTime(new Date());
-	}
-	//condition.setWeather(weather);
-	weather.setCondition(condition);
+        List<Weather> w = new ArrayList<Weather>();
+        Weather weather = new Weather();
+        Condition condition = new Condition();
+        condition.setText("text");
+        condition.setDescription("text");
+        condition.setIcon("text");
+        condition.setMinTemp(20);
+        condition.setMaxTemp(30);
+        condition.setCode("text");
+        String valuee = "";
+        try {
+            // valuee =
+            // xPath.compile("/rss/channel/item/condition/@date").evaluate(response);
+            // Date condDate = new
+            // SimpleDateFormat("E, dd MMM yyyy HH:mm a z").parse(valuee);
+            // condition.setFromTime(condDate);
+            // condition.setToTime(condDate);
+            condition.setFromTime(new Date());
+            condition.setToTime(new Date());
+        } catch (Exception e) {
+            System.out.println("Date :" + valuee + ", Error::" + e);
+            e.printStackTrace();
+            condition.setFromTime(new Date());
+            condition.setToTime(new Date());
+        }
+        // condition.setWeather(weather);
+        weather.setCondition(condition);
 
-	Atmosphere atmosphere = new Atmosphere();
-	atmosphere.setHumidity(10);
-	atmosphere.setVisibility(11);
-	atmosphere.setPressure(12);
-	atmosphere.setRising("");
-	//atmosphere.setWeather(weather);
-	weather.setAtmosphere(atmosphere);
+        Atmosphere atmosphere = new Atmosphere();
+        atmosphere.setHumidity(10);
+        atmosphere.setVisibility(11);
+        atmosphere.setPressure(12);
+        atmosphere.setRising("");
+        // atmosphere.setWeather(weather);
+        weather.setAtmosphere(atmosphere);
 
-	Wind wind = new Wind();
-	wind.setChill(10);
-	wind.setDirection("text");
-	wind.setSpeed(30);
-	//wind.setWeather(weather);
-	weather.setWind(wind);
+        Wind wind = new Wind();
+        wind.setChill(10);
+        wind.setDirection("text");
+        wind.setSpeed(30);
+        // wind.setWeather(weather);
+        weather.setWind(wind);
 
-	Precipitation precipitation = new Precipitation();
-	//precipitation.setWeather(weather);
-	weather.setPrecipitation(precipitation);
+        Precipitation precipitation = new Precipitation();
+        // precipitation.setWeather(weather);
+        weather.setPrecipitation(precipitation);
 
-	weather.setWriteTime(new Date());
-	weather.setSource("text");
-	w.add(weather);
-	weather = weatherDAO.create(weather);
-	//return "Hi";
-	w.add(weather);
-	return w;
+        weather.setWriteTime(new Date());
+        weather.setSource("text");
+        w.add(weather);
+        weather = weatherDAO.create(weather);
+        // return "Hi";
+        w.add(weather);
+        return w;
     }
 
 }

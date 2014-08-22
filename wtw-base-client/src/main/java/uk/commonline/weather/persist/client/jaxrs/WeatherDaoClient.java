@@ -1,5 +1,8 @@
 package uk.commonline.weather.persist.client.jaxrs;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.client.WebTarget;
@@ -30,14 +33,38 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     protected String getPath() {
 	return "weather";
     }
-
+    
+    private String getStringFromDate(Date date) {
+        try {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            String dateString = df.format(date);
+            return dateString;
+        } catch (Exception e) {
+            //WebApplicationException ...("Date format should be yyyy-MM-dd'T'HH:mm:ss", Status.BAD_REQUEST);
+            return ""; 
+        }
+    }
+    
     @Override
     public List<Weather> recentForRegion(long region) {
 	GenericType<List<Weather>> list = new GenericType<List<Weather>>() {
 	};
 	WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
-		.target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("recent");
+		.target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("recent/region/{region}");
 	List<Weather> entities = target.resolveTemplate("region", region).request(MediaType.APPLICATION_JSON).get(list);
 	return entities;
+    }
+    
+    //Just use ToString() and pass a format e.g.: startDate.ToString("yyyyMMddHHmmss")
+    @Override
+    public List<Weather> getRange(final long region, final Date fromTime, final int hours, final int count){
+        GenericType<List<Weather>> list = new GenericType<List<Weather>>() {
+        };
+        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
+                .target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}");
+        target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime)).resolveTemplate("hours", hours).resolveTemplate("count", count);
+        System.out.println("!!Target:"+target.toString());
+        List<Weather> entities = target.request(MediaType.APPLICATION_JSON).get(list);
+        return entities;
     }
 }

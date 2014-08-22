@@ -27,19 +27,25 @@
              http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd"
 	default-lazy-init="false">
 
-	<bean id="restClient" class="uk.commonline.data.client.jaxrs.RestClient">
+	<bean id="restClientLocation" class="uk.commonline.data.client.jaxrs.RestClient">
+	</bean>
+	
+	<bean id="restClientWeather" class="uk.commonline.data.client.jaxrs.RestClient">
+	</bean>
+	
+	<bean id="restClientWeatherForecast" class="uk.commonline.data.client.jaxrs.RestClient">
 	</bean>
 	
 	<bean id="locationDAO" class="uk.commonline.weather.persist.client.jaxrs.LocationDaoClient">
-		<property name="restClient" ref="restClient" />
+		<property name="restClient" ref="restClientLocation" />
 	</bean>
 
 	<bean id="weatherDAO" class="uk.commonline.weather.persist.client.jaxrs.WeatherDaoClient">
-		<property name="restClient" ref="restClient" />
+		<property name="restClient" ref="restClientWeather" />
 	</bean>
 	
 	<bean id="weatherForecastDAO" class="uk.commonline.weather.persist.client.jaxrs.WeatherForecastDaoClient">
-		<property name="restClient" ref="restClient" />
+		<property name="restClient" ref="restClientWeatherForecast" />
 	</bean>
 
 </beans>

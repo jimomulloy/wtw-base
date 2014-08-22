@@ -16,7 +16,7 @@ public abstract class AbstractJpaDAO<T extends EI> implements Dao<T> {
     private Class<T> clazz;
 
     @PersistenceContext
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     public void setClazz(final Class<T> clazzToSet) {
 	clazz = clazzToSet;
