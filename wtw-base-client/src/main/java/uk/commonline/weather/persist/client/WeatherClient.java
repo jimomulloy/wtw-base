@@ -29,22 +29,11 @@ public class WeatherClient {
      *            Skybase URL
      */
     public WeatherClient(RestTemplate template, String wtwUrl) {
-	this.template = template;
-	if (!wtwUrl.endsWith("/")) {
-	    wtwUrl += "/";
-	}
-	this.wtwUrl = wtwUrl;
-    }
-
-    /**
-     * @return REST template
-     */
-    public RestTemplate getRestTemplate() {
-	return template;
-    }
-
-    public String getWtwUrl() {
-	return wtwUrl;
+        this.template = template;
+        if (!wtwUrl.endsWith("/")) {
+            wtwUrl += "/";
+        }
+        this.wtwUrl = wtwUrl;
     }
 
     /**
@@ -52,9 +41,16 @@ public class WeatherClient {
      *            package
      */
     public void createWeather(Weather weather) {
-	notNull(weather);
-	URI location = template.postForLocation(getWeathersUrl(), weather);
-	log.info("Created package: {}", location);
+        notNull(weather);
+        URI location = template.postForLocation(getWeathersUrl(), weather);
+        log.info("Created package: {}", location);
+    }
+
+    /**
+     * @return REST template
+     */
+    public RestTemplate getRestTemplate() {
+        return template;
     }
 
     /**
@@ -66,6 +62,10 @@ public class WeatherClient {
     // }
 
     private String getWeathersUrl() {
-	return wtwUrl + "weathers";
+        return wtwUrl + "weathers";
+    }
+
+    public String getWtwUrl() {
+        return wtwUrl;
     }
 }

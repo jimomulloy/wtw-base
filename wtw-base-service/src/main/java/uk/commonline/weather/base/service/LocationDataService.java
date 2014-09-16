@@ -4,5 +4,5 @@ import uk.commonline.weather.model.Location;
 
 public interface LocationDataService {
 
-	Location findByZip(String zip);
+    Location findByZip(String zip);
 }

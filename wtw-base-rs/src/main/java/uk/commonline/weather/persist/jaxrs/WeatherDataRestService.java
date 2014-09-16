@@ -41,17 +41,36 @@ public class WeatherDataRestService extends AbstractCrudService<Weather> /*
     @Autowired
     WeatherDAO weatherDAO;
 
+    private Date getDateFromString(String dateString) {
+        try {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date date = df.parse(dateString);
+            return date;
+        } catch (ParseException e) {
+            // WebApplicationException
+            // ...("Date format should be yyyy-MM-dd'T'HH:mm:ss",
+            // Status.BAD_REQUEST);
+            return new Date();
+        }
+    }
+
+    @Override
+    public Class<Weather> getEiClass() {
+        return Weather.class;
+    }
+
+    @Path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Weather> getRange(@PathParam("region") long region, @PathParam("fromTime") String fromTime, @PathParam("hours") int hours,
+            @PathParam("count") int count) {
+
+        return weatherDAO.getRange(region, getDateFromString(fromTime), hours, count);
+    }
+
     @Override
     protected Dao<Weather> getService() {
         return weatherDAO;
-    }
-
-    public void setWeatherDAO(WeatherDAO weatherDAO) {
-        this.weatherDAO = weatherDAO;
-    }
-
-    public Class<Weather> getEiClass() {
-        return Weather.class;
     }
 
     @Path("recent/region/{region}")
@@ -62,25 +81,10 @@ public class WeatherDataRestService extends AbstractCrudService<Weather> /*
         return weathers;
     }
 
-    @Path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Weather> getRange(@PathParam("region") long region, @PathParam("fromTime") String fromTime, @PathParam("hours") int hours, @PathParam("count") int count) {
-      
-        return weatherDAO.getRange(region, getDateFromString(fromTime), hours, count);
+    public void setWeatherDAO(WeatherDAO weatherDAO) {
+        this.weatherDAO = weatherDAO;
     }
-    
-    private Date getDateFromString(String dateString) {
-        try {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            Date date = df.parse(dateString);
-            return date;
-        } catch (ParseException e) {
-            //WebApplicationException ...("Date format should be yyyy-MM-dd'T'HH:mm:ss", Status.BAD_REQUEST);
-            return new Date(); 
-        }
-    }
-    
+
     @Path("test")
     @GET
     public List<Weather> test() {
@@ -104,7 +108,6 @@ public class WeatherDataRestService extends AbstractCrudService<Weather> /*
             condition.setFromTime(new Date());
             condition.setToTime(new Date());
         } catch (Exception e) {
-            System.out.println("Date :" + valuee + ", Error::" + e);
             e.printStackTrace();
             condition.setFromTime(new Date());
             condition.setToTime(new Date());

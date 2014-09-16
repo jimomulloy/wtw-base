@@ -33,26 +33,11 @@ public class LocationClient {
      *            Skybase URL
      */
     public LocationClient(RestTemplate template, String wtwUrl) {
-	this.template = template;
-	if (!wtwUrl.endsWith("/")) {
-	    wtwUrl += "/";
-	}
-	this.wtwUrl = wtwUrl;
-    }
-
-    /**
-     * @return REST template
-     */
-    public RestTemplate getRestTemplate() {
-	return template;
-    }
-
-    public void setRestTemplate(RestTemplate template) {
-	this.template = template;
-    }
-
-    public String getWtwUrl() {
-	return wtwUrl;
+        this.template = template;
+        if (!wtwUrl.endsWith("/")) {
+            wtwUrl += "/";
+        }
+        this.wtwUrl = wtwUrl;
     }
 
     /**
@@ -60,26 +45,42 @@ public class LocationClient {
      *            package
      */
     public void createLocation(Location location) {
-	notNull(location);
-	URI uri = template.postForLocation(getLocationsUrl(), location);
-	log.info("Created package: {}", uri);
+        notNull(location);
+        URI uri = template.postForLocation(getLocationsUrl(), location);
+        log.info("Created package: {}", uri);
     }
 
     /**
      * @return all packages, sorted
      */
     public Location getLocation(Long id) {
-	return template.getForObject(getLocationsUrl() + "?format=xml", Location.class, id);
+        return template.getForObject(getLocationsUrl() + "?format=xml", Location.class, id);
     }
 
     /**
      * @return all packages, sorted
      */
-    //public List<Location> getLocations() {
-//	return template.getForObject(getLocationsUrl() + "?format=xml", Location.LocationListWrapper.class).getList();
-    //}
+    // public List<Location> getLocations() {
+    // return template.getForObject(getLocationsUrl() + "?format=xml",
+    // Location.LocationListWrapper.class).getList();
+    // }
 
     private String getLocationsUrl() {
-	return wtwUrl + "location";
+        return wtwUrl + "location";
+    }
+
+    /**
+     * @return REST template
+     */
+    public RestTemplate getRestTemplate() {
+        return template;
+    }
+
+    public String getWtwUrl() {
+        return wtwUrl;
+    }
+
+    public void setRestTemplate(RestTemplate template) {
+        this.template = template;
     }
 }

@@ -15,24 +15,23 @@ import uk.commonline.weather.persist.WeatherDAO;
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
 public class BaseDaoTest extends TestCase {
 
-
     @Autowired
     WeatherDAO weatherDAO;
-
-    public void setWeatherDAO(WeatherDAO weatherDAO) {
-	this.weatherDAO = weatherDAO;
-    }
 
     @Test
     public void dummy() throws Exception {
 
     }
 
-    //@Test
+    public void setWeatherDAO(WeatherDAO weatherDAO) {
+        this.weatherDAO = weatherDAO;
+    }
+
+    // @Test
     public void test() throws Exception {
 
-	Weather weather = new Weather();
-	weather = weatherDAO.update(weather);
-	System.out.println("!!Updated weather:" + weather.getId());
+        Weather weather = new Weather();
+        weather = weatherDAO.update(weather);
+        System.out.println("!!Updated weather:" + weather.getId());
     }
 }

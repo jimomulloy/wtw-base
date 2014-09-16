@@ -11,21 +11,18 @@ import uk.commonline.weather.persist.LocationDAO;
  */
 public class LocationDaoClient extends AbstractCrudClient<Location> implements LocationDAO, LocationDataService {
 
-	protected String getPath() {
-		return "location";
-	}
-	
-	public Location findByZip(final String zip) {
-		System.out.println("!!LocationDaoClient findbyzip");
-		Location location = getRestClient()
-				.getClient()
-				.target(getRestClient().createUrl(
-						"http://localhost:8080/wtwbase/webresources/"))
-				.path(getPath()).path("zip/{zip}").resolveTemplate("zip", zip)
-				.request(MediaType.APPLICATION_JSON).get(Location.class);
-		if (location == null) {
-			location = newCiInstance();
-		}
-		return location;
-	}
+    @Override
+    public Location findByZip(final String zip) {
+        Location location = getRestClient().getClient().target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/"))
+                .path(getPath()).path("zip/{zip}").resolveTemplate("zip", zip).request(MediaType.APPLICATION_JSON).get(Location.class);
+        if (location == null) {
+            location = newCiInstance();
+        }
+        return location;
+    }
+
+    @Override
+    protected String getPath() {
+        return "location";
+    }
 }

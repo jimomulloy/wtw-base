@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 import uk.commonline.data.client.jaxrs.AbstractCrudClient;
 import uk.commonline.data.client.jaxrs.RestClient;
 import uk.commonline.weather.base.service.WeatherForecastDataService;
-import uk.commonline.weather.model.Weather;
 import uk.commonline.weather.model.WeatherForecast;
 import uk.commonline.weather.model.WeatherListMessenger;
 import uk.commonline.weather.model.WeatherMessenger;
@@ -23,60 +22,68 @@ import uk.commonline.weather.persist.WeatherForecastDAO;
  */
 public class WeatherForecastDaoClient extends AbstractCrudClient<WeatherForecast> implements WeatherForecastDAO, WeatherForecastDataService {
 
-    public void setRestClient(RestClient restClient) {
-	super.setRestClient(restClient);
-	restClient.registerProvider(WeatherListMessenger.class);
-	restClient.registerProvider(WeatherReportMessenger.class);
-	restClient.registerProvider(WeatherMessenger.class);
-	restClient.resetClient();
+    @Override
+    protected String getPath() {
+        return "forecast";
     }
 
-    protected String getPath() {
-	return "forecast";
+    // Just use ToString() and pass a format e.g.:
+    // startDate.ToString("yyyyMMddHHmmss")
+    @Override
+    public List<WeatherForecast> getRange(final long region, final Date fromTime, final int hours, final int count) {
+        GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
+        };
+        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
+                .target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath())
+                .path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}");
+        target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime)).resolveTemplate("hours", hours)
+                .resolveTemplate("count", count);
+        List<WeatherForecast> entities = target.request(MediaType.APPLICATION_JSON).get(list);
+        return entities;
     }
-    
+
+    @Override
+    public List<WeatherForecast> getRetro(final long region, final Date fromTime, final Date forecastTime, final int hours, final int count) {
+        GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
+        };
+        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
+                .target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath())
+                .path("retro/region/{region}/fromTime/{fromTime}/forecastTime/{forecastTime}/hours/{hours}/count/{count}");
+        target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime))
+                .resolveTemplate("forecastTime", getStringFromDate(forecastTime)).resolveTemplate("hours", hours).resolveTemplate("count", count);
+        List<WeatherForecast> entities = target.request(MediaType.APPLICATION_JSON).get(list);
+        return entities;
+    }
+
     private String getStringFromDate(Date date) {
         try {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             String dateString = df.format(date);
             return dateString;
         } catch (Exception e) {
-            //WebApplicationException ...("Date format should be yyyy-MM-dd'T'HH:mm:ss", Status.BAD_REQUEST);
-            return ""; 
+            // WebApplicationException
+            // ...("Date format should be yyyy-MM-dd'T'HH:mm:ss",
+            // Status.BAD_REQUEST);
+            return "";
         }
     }
-    
+
     @Override
     public List<WeatherForecast> recentForRegion(long region) {
-	GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
-	};
-	WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
-		.target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("recent/region/{region}");
-	List<WeatherForecast> entities = target.resolveTemplate("region", region).request(MediaType.APPLICATION_JSON).get(list);
-	return entities;
-    }
-    
-    //Just use ToString() and pass a format e.g.: startDate.ToString("yyyyMMddHHmmss")
-    @Override
-    public List<WeatherForecast> getRange(final long region, final Date fromTime, final int hours, final int count){
         GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
         };
         WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
-                .target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}");
-        target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime)).resolveTemplate("hours", hours).resolveTemplate("count", count);
-        System.out.println("!!Forecast Target:"+target.toString());
-        List<WeatherForecast> entities = target.request(MediaType.APPLICATION_JSON).get(list);
+                .target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("recent/region/{region}");
+        List<WeatherForecast> entities = target.resolveTemplate("region", region).request(MediaType.APPLICATION_JSON).get(list);
         return entities;
     }
-    
+
     @Override
-    public List<WeatherForecast> getRetro(final long region, final Date fromTime, final Date forecastTime, final int hours, final int count){
-        GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
-        };
-        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
-                .target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("retro/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}");
-        target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime)).resolveTemplate("forecastTime", getStringFromDate(forecastTime)).resolveTemplate("hours", hours).resolveTemplate("count", count);
-        List<WeatherForecast> entities = target.request(MediaType.APPLICATION_JSON).get(list);
-        return entities;
+    public void setRestClient(RestClient restClient) {
+        super.setRestClient(restClient);
+        restClient.registerProvider(WeatherListMessenger.class);
+        restClient.registerProvider(WeatherReportMessenger.class);
+        restClient.registerProvider(WeatherMessenger.class);
+        restClient.resetClient();
     }
 }

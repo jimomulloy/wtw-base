@@ -33,48 +33,53 @@ public class WeatherForecastDataRestService extends AbstractCrudService<WeatherF
     @Autowired
     WeatherForecastDAO weatherForecastDAO;
 
-    @Override
-    protected Dao<WeatherForecast> getService() {
-	return weatherForecastDAO;
-    }
-
-    public void setWeatherDAO(WeatherForecastDAO weatherForecastDAO) {
-	this.weatherForecastDAO = weatherForecastDAO;
-    }
-
-    public Class<WeatherForecast> getEiClass() {
-	return WeatherForecast.class;
-    }
-
-    @Path("recent/region/{region}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<WeatherForecast> recentForRegion(@PathParam("region") long region) {
-	return weatherForecastDAO.recentForRegion(region);
-    }
-
-    @Path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<WeatherForecast> getRange(@PathParam("region") long region, @PathParam("fromTime") String fromTime, @PathParam("hours") int hours, @PathParam("count") int count) {
-        return weatherForecastDAO.getRange(region, getDateFromString(fromTime), hours, count);
-    }  
-    
     private Date getDateFromString(String dateString) {
         try {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             Date date = df.parse(dateString);
             return date;
         } catch (ParseException e) {
-            //WebApplicationException ...("Date format should be yyyy-MM-dd'T'HH:mm:ss", Status.BAD_REQUEST);
-            return new Date(); 
+            // WebApplicationException
+            // ...("Date format should be yyyy-MM-dd'T'HH:mm:ss",
+            // Status.BAD_REQUEST);
+            return new Date();
         }
+    }
+
+    @Override
+    public Class<WeatherForecast> getEiClass() {
+        return WeatherForecast.class;
+    }
+
+    @Path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<WeatherForecast> getRange(@PathParam("region") long region, @PathParam("fromTime") String fromTime, @PathParam("hours") int hours,
+            @PathParam("count") int count) {
+        return weatherForecastDAO.getRange(region, getDateFromString(fromTime), hours, count);
     }
 
     @Path("retro/region/{region}/fromTime/{fromTime}/forecastTime/{forecastTime}/hours/{hours}/count/{count}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<WeatherForecast> getRetro(@PathParam("region") long region, @PathParam("fromTime") String fromTime, @PathParam("forecastTime") String forecastTime, @PathParam("hours") int hours, @PathParam("count") int count) {
+    public List<WeatherForecast> getRetro(@PathParam("region") long region, @PathParam("fromTime") String fromTime,
+            @PathParam("forecastTime") String forecastTime, @PathParam("hours") int hours, @PathParam("count") int count) {
         return weatherForecastDAO.getRetro(region, getDateFromString(fromTime), getDateFromString(forecastTime), hours, count);
-    }  
+    }
+
+    @Override
+    protected Dao<WeatherForecast> getService() {
+        return weatherForecastDAO;
+    }
+
+    @Path("recent/region/{region}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<WeatherForecast> recentForRegion(@PathParam("region") long region) {
+        return weatherForecastDAO.recentForRegion(region);
+    }
+
+    public void setWeatherDAO(WeatherForecastDAO weatherForecastDAO) {
+        this.weatherForecastDAO = weatherForecastDAO;
+    }
 }

@@ -32,25 +32,25 @@ import uk.commonline.data.model.EI;
  */
 public abstract class AbstractDataAccessImplTests<T extends EI> {
 
+    protected abstract Dao<T> getDao();
+
     protected abstract EntityManager getRepository();
 
-    protected abstract Dao<T> getDao();
+    @Test
+    public void testDelete() {
+        getDao().deleteById(1L);
+        verify(getRepository(), times(1)).remove(1L);
+    }
 
     @Test
     public void testFindAll() {
-	List<T> list = getDao().getAll();
-	assertNotNull(list);
+        List<T> list = getDao().getAll();
+        assertNotNull(list);
     }
 
     @Test
     public void testFindOne() {
-	T entity = getDao().get(1L);
-	assertNotNull(entity);
-    }
-
-    @Test
-    public void testDelete() {
-	getDao().deleteById(1L);
-	verify(getRepository(), times(1)).remove(1L);
+        T entity = getDao().get(1L);
+        assertNotNull(entity);
     }
 }

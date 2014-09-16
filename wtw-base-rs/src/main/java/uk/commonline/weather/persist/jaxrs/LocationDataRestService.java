@@ -22,29 +22,32 @@ import uk.commonline.weather.persist.LocationDAO;
 @Path("/location")
 @Component
 @Transactional
-public class LocationDataRestService extends AbstractCrudService<Location> /* implements LocationDataService */ {
+public class LocationDataRestService extends AbstractCrudService<Location> /*
+                                                                            * implements
+                                                                            * LocationDataService
+                                                                            */{
 
-	@Autowired
-	LocationDAO locationDAO;
-	
-	@Override
-	protected Dao<Location> getService() {
-		return locationDAO;
-	}
-		
-	public void setLocationDAO(LocationDAO locationDAO) {
-		this.locationDAO = locationDAO;
-	}
+    @Autowired
+    LocationDAO locationDAO;
 
-	public Class<Location> getEiClass() {
-		return Location.class;
-	}
-	
-	@GET
-	@Path("zip/{zip}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Location findByZip(@PathParam("zip") String zip) {
-		System.out.println("!!LocationDataRestService findbyzip");
-		return locationDAO.findByZip(zip);
-	}
+    @GET
+    @Path("zip/{zip}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Location findByZip(@PathParam("zip") String zip) {
+        return locationDAO.findByZip(zip);
+    }
+
+    @Override
+    public Class<Location> getEiClass() {
+        return Location.class;
+    }
+
+    @Override
+    protected Dao<Location> getService() {
+        return locationDAO;
+    }
+
+    public void setLocationDAO(LocationDAO locationDAO) {
+        this.locationDAO = locationDAO;
+    }
 }

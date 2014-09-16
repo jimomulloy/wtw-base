@@ -18,22 +18,23 @@ public abstract class AbstractJpaDAO<T extends EI> implements Dao<T> {
     @PersistenceContext
     protected EntityManager entityManager;
 
-    public void setClazz(final Class<T> clazzToSet) {
-	clazz = clazzToSet;
+    @Override
+    public long count() {
+        return (Long) entityManager.createQuery("select count(*) from " + clazz.getName()).getSingleResult();
     }
 
     @Override
     @Transactional
     public T create(final T entity) {
-	notNull(entity, clazz.getName() + " can't be null");
-	entityManager.persist(entity);
-	return entity;
+        notNull(entity, clazz.getName() + " can't be null");
+        entityManager.persist(entity);
+        return entity;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<T> getAll() {
-	return entityManager.createQuery("from " + clazz.getName()).getResultList();
+    public void delete(final T entity) {
+        notNull(entity, clazz.getName() + " can't be null");
+        entityManager.remove(entity);
     }
 
     // @Override
@@ -47,64 +48,61 @@ public abstract class AbstractJpaDAO<T extends EI> implements Dao<T> {
     // }
 
     @Override
-    public T get(Long id) {
-	notNull(id, "id can't be null");
+    public void deleteAll() {
+        entityManager.createQuery("delete from " + clazz.getName()).executeUpdate();
+    }
 
-	// This returns null when the object doesn't exist
-	return entityManager.find(clazz, id);
+    @Override
+    public void deleteById(Long id) {
+        notNull(id, "id can't be null");
+        entityManager.createQuery("delete from " + clazz.getName() + " where id = :id").setParameter("id", id).executeUpdate();
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        notNull(id, "id can't be null");
+        return (get(id) != null);
+    }
+
+    @Override
+    public T get(Long id) {
+        notNull(id, "id can't be null");
+
+        // This returns null when the object doesn't exist
+        return entityManager.find(clazz, id);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<T> getAll() {
+        return entityManager.createQuery("from " + clazz.getName()).getResultList();
+    }
+
+    protected final EntityManager getEntityManager() {
+        return entityManager;
     }
 
     @Override
     public T load(Long id) {
-	notNull(id, "id can't be null");
+        notNull(id, "id can't be null");
 
-	T entity = get(id);
-	if (entity == null) {
-	    throw new RuntimeException("No such " + clazz.getName() + ": " + id);
-	}
-	return entity;
+        T entity = get(id);
+        if (entity == null) {
+            throw new RuntimeException("No such " + clazz.getName() + ": " + id);
+        }
+        return entity;
+    }
+
+    public void setClazz(final Class<T> clazzToSet) {
+        clazz = clazzToSet;
     }
 
     @Override
     @Transactional
     public T update(final T entity) {
-	notNull(entity, clazz.getName() + " can't be null");
-	System.out.println("!Update entity:" + entity);
-	entityManager.merge(entity);
-	//entityManager.refresh(entity);
-	System.out.println("!Updated entity:" + entity.getId());
-	return entity;
-    }
-
-    @Override
-    public void delete(final T entity) {
-	notNull(entity, clazz.getName() + " can't be null");
-	entityManager.remove(entity);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-	notNull(id, "id can't be null");
-	entityManager.createQuery("delete from " + clazz.getName() + " where id = :id").setParameter("id", id).executeUpdate();
-    }
-
-    @Override
-    public void deleteAll() {
-	entityManager.createQuery("delete from " + clazz.getName()).executeUpdate();
-    }
-
-    @Override
-    public long count() {
-	return (Long) entityManager.createQuery("select count(*) from " + clazz.getName()).getSingleResult();
-    }
-
-    @Override
-    public boolean exists(Long id) {
-	notNull(id, "id can't be null");
-	return (get(id) != null);
-    }
-
-    protected final EntityManager getEntityManager() {
-	return entityManager;
+        notNull(entity, clazz.getName() + " can't be null");
+        entityManager.merge(entity);
+        // entityManager.refresh(entity);
+        return entity;
     }
 }
