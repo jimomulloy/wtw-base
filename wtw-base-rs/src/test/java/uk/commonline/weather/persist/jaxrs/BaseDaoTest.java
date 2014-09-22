@@ -11,8 +11,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.commonline.weather.model.Weather;
 import uk.commonline.weather.persist.WeatherDAO;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:applicationContext.xml")
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations = "classpath:applicationContext.xml")
 public class BaseDaoTest extends TestCase {
 
     @Autowired
