@@ -81,6 +81,15 @@ public class WeatherDataRestService extends AbstractCrudService<Weather> /*
         return weathers;
     }
 
+    @Path("regions/fromTime/{fromTime}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Long> recentRegions(@PathParam("fromTime") String fromTime) {
+        List<Long> regions = weatherDAO.recentRegions(getDateFromString(fromTime));
+        System.out.println("!!recentRegions regions :"+regions.size());
+        return regions;
+    }
+
     public void setWeatherDAO(WeatherDAO weatherDAO) {
         this.weatherDAO = weatherDAO;
     }

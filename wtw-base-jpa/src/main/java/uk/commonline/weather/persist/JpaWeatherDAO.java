@@ -43,4 +43,14 @@ public class JpaWeatherDAO extends AbstractJpaDAO<Weather> implements WeatherDAO
         return weather;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Long> recentRegions(Date fromTime) {
+        Query query = entityManager.createNativeQuery("select distinct w.region from WEATHER w where w.writeTime >= :fromTime");
+        query.setParameter("fromTime", fromTime);
+        List<Long> result = query.getResultList();
+        System.out.println("!!DAO recentRegions result :"+result.size()+", v:"+result.get(0));
+        return result;
+    }
+
 }

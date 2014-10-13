@@ -5,13 +5,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.jersey.client.ClientConfig;
+
 import uk.commonline.data.client.jaxrs.AbstractCrudClient;
 import uk.commonline.data.client.jaxrs.RestClient;
 import uk.commonline.weather.base.service.WeatherDataService;
+import uk.commonline.weather.model.LongListMessenger;
 import uk.commonline.weather.model.Weather;
 import uk.commonline.weather.model.WeatherListMessenger;
 import uk.commonline.weather.model.WeatherMessenger;
@@ -66,11 +71,23 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     }
 
     @Override
+    public List<Long> recentRegions(Date fromTime) {
+        GenericType<List<Long>> list = new GenericType<List<Long>>() {
+        };
+        System.out.println("!!In client recentRegions ");
+        WebTarget target = getRestClient().getClient().register(LongListMessenger.class).target("http://localhost:8080/wtwbase/webresources/").path(getPath()).path("regions/fromTime/{fromTime}");
+        List<Long> entities = target.resolveTemplate("fromTime", getStringFromDate(fromTime)).request(MediaType.APPLICATION_JSON).get(list);
+        System.out.println("!!recentRegions entities:"+entities.size());
+        return entities;
+    }
+
+    @Override
     public void setRestClient(RestClient restClient) {
         super.setRestClient(restClient);
         restClient.registerProvider(WeatherListMessenger.class);
         restClient.registerProvider(WeatherReportMessenger.class);
         restClient.registerProvider(WeatherMessenger.class);
+        restClient.registerProvider(LongListMessenger.class);
         restClient.resetClient();
     }
 }
