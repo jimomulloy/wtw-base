@@ -3,7 +3,6 @@ package uk.commonline.weather.persist.jaxrs;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,11 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import uk.commonline.data.access.Dao;
 import uk.commonline.data.service.jaxrs.AbstractCrudService;
-import uk.commonline.weather.model.Atmosphere;
-import uk.commonline.weather.model.Condition;
-import uk.commonline.weather.model.Precipitation;
 import uk.commonline.weather.model.Weather;
-import uk.commonline.weather.model.Wind;
 import uk.commonline.weather.persist.WeatherDAO;
 
 /**
@@ -46,9 +41,6 @@ public class WeatherDataRestService extends AbstractCrudService<Weather> {
             Date date = df.parse(dateString);
             return date;
         } catch (ParseException e) {
-            // WebApplicationException
-            // ...("Date format should be yyyy-MM-dd'T'HH:mm:ss",
-            // Status.BAD_REQUEST);
             return new Date();
         }
     }
@@ -92,63 +84,4 @@ public class WeatherDataRestService extends AbstractCrudService<Weather> {
     public void setWeatherDAO(WeatherDAO weatherDAO) {
         this.weatherDAO = weatherDAO;
     }
-
-    @Path("test")
-    @GET
-    public List<Weather> test() {
-        List<Weather> w = new ArrayList<Weather>();
-        Weather weather = new Weather();
-        Condition condition = new Condition();
-        condition.setText("text");
-        condition.setDescription("text");
-        condition.setIcon("text");
-        condition.setMinTemp(20);
-        condition.setMaxTemp(30);
-        condition.setCode("text");
-        String valuee = "";
-        try {
-            // valuee =
-            // xPath.compile("/rss/channel/item/condition/@date").evaluate(response);
-            // Date condDate = new
-            // SimpleDateFormat("E, dd MMM yyyy HH:mm a z").parse(valuee);
-            // condition.setFromTime(condDate);
-            // condition.setToTime(condDate);
-            condition.setFromTime(new Date());
-            condition.setToTime(new Date());
-        } catch (Exception e) {
-            e.printStackTrace();
-            condition.setFromTime(new Date());
-            condition.setToTime(new Date());
-        }
-        // condition.setWeather(weather);
-        weather.setCondition(condition);
-
-        Atmosphere atmosphere = new Atmosphere();
-        atmosphere.setHumidity(10);
-        atmosphere.setVisibility(11);
-        atmosphere.setPressure(12);
-        atmosphere.setRising("");
-        // atmosphere.setWeather(weather);
-        weather.setAtmosphere(atmosphere);
-
-        Wind wind = new Wind();
-        wind.setChill(10);
-        wind.setDirection("text");
-        wind.setSpeed(30);
-        // wind.setWeather(weather);
-        weather.setWind(wind);
-
-        Precipitation precipitation = new Precipitation();
-        // precipitation.setWeather(weather);
-        weather.setPrecipitation(precipitation);
-
-        weather.setWriteTime(new Date());
-        weather.setSource("text");
-        w.add(weather);
-        weather = weatherDAO.create(weather);
-        // return "Hi";
-        w.add(weather);
-        return w;
-    }
-
 }
