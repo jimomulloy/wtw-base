@@ -5,13 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-
-import org.glassfish.jersey.client.ClientConfig;
 
 import uk.commonline.data.client.jaxrs.AbstractCrudClient;
 import uk.commonline.data.client.jaxrs.RestClient;
@@ -24,22 +20,25 @@ import uk.commonline.weather.model.WeatherReportMessenger;
 import uk.commonline.weather.persist.WeatherDAO;
 
 /**
+ * @author Jim O'Mulloy
+ * 
+ *         JAXRS Client for WTW Base Weather DAO Service.
+ *
  */
 public class WeatherDaoClient extends AbstractCrudClient<Weather> implements WeatherDAO, WeatherDataService {
 
+    private static final String SERVICE_PATH = "wtwbase/webresources/weather";
+
     @Override
     protected String getPath() {
-        return "weather";
+        return SERVICE_PATH;
     }
 
-    // Just use ToString() and pass a format e.g.:
-    // startDate.ToString("yyyyMMddHHmmss")
     @Override
     public List<Weather> getRange(final long region, final Date fromTime, final int hours, final int count) {
         GenericType<List<Weather>> list = new GenericType<List<Weather>>() {
         };
-        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
-                .target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath())
+        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class).target(getRestClient().createUrl(getPath()))
                 .path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}");
         target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime)).resolveTemplate("hours", hours)
                 .resolveTemplate("count", count);
@@ -53,9 +52,6 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
             String dateString = df.format(date);
             return dateString;
         } catch (Exception e) {
-            // WebApplicationException
-            // ...("Date format should be yyyy-MM-dd'T'HH:mm:ss",
-            // Status.BAD_REQUEST);
             return "";
         }
     }
@@ -64,8 +60,8 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     public List<Weather> recentForRegion(long region) {
         GenericType<List<Weather>> list = new GenericType<List<Weather>>() {
         };
-        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class)
-                .target(getRestClient().createUrl("http://localhost:8080/wtwbase/webresources/")).path(getPath()).path("recent/region/{region}");
+        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class).target(getRestClient().createUrl(getPath()))
+                .path("recent/region/{region}");
         List<Weather> entities = target.resolveTemplate("region", region).request(MediaType.APPLICATION_JSON).get(list);
         return entities;
     }
@@ -74,10 +70,9 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     public List<Long> recentRegions(Date fromTime) {
         GenericType<List<Long>> list = new GenericType<List<Long>>() {
         };
-        System.out.println("!!In client recentRegions ");
-        WebTarget target = getRestClient().getClient().register(LongListMessenger.class).target("http://localhost:8080/wtwbase/webresources/").path(getPath()).path("regions/fromTime/{fromTime}");
+        WebTarget target = getRestClient().getClient().register(LongListMessenger.class).target(getRestClient().createUrl(getPath()))
+                .path("regions/fromTime/{fromTime}");
         List<Long> entities = target.resolveTemplate("fromTime", getStringFromDate(fromTime)).request(MediaType.APPLICATION_JSON).get(list);
-        System.out.println("!!recentRegions entities:"+entities.size());
         return entities;
     }
 

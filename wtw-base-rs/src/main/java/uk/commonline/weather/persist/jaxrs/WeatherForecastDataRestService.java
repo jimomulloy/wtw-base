@@ -22,8 +22,10 @@ import uk.commonline.weather.model.WeatherForecast;
 import uk.commonline.weather.persist.WeatherForecastDAO;
 
 /**
- * Weather controller.
+ * @author Jim O'Mulloy
  * 
+ *         WTW Base Weather Forecast DAO JAXRS Service
+ *
  */
 @Component
 @Path("/forecast")

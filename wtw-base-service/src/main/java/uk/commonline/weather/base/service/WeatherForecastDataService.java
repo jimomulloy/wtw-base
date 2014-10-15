@@ -4,10 +4,20 @@ import java.util.List;
 
 import uk.commonline.weather.model.WeatherForecast;
 
+/**
+ * @author Jim O'Mulloy
+ *
+ *         WTW Base Weather Forecast DAO service API
+ * 
+ */
 public interface WeatherForecastDataService {
 
-    // @Path("recent")
-    // @POST
+    /**
+     * Get list of recently active Weather Forecast data items for given Region id.
+     * 
+     * @param region
+     * @return
+     */
     List<WeatherForecast> recentForRegion(final long region);
 
 }

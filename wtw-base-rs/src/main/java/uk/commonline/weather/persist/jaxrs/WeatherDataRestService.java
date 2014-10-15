@@ -27,16 +27,15 @@ import uk.commonline.weather.model.Wind;
 import uk.commonline.weather.persist.WeatherDAO;
 
 /**
- * Weather controller.
+ * @author Jim O'Mulloy
  * 
+ *         WTW Base Weather DAO JAXRS Service
+ *
  */
 @Component
 @Path("/weather")
 @Transactional
-public class WeatherDataRestService extends AbstractCrudService<Weather> /*
-                                                                          * implements
-                                                                          * WeatherDataService
-                                                                          */{
+public class WeatherDataRestService extends AbstractCrudService<Weather> {
 
     @Autowired
     WeatherDAO weatherDAO;
@@ -86,7 +85,7 @@ public class WeatherDataRestService extends AbstractCrudService<Weather> /*
     @Produces(MediaType.APPLICATION_JSON)
     public List<Long> recentRegions(@PathParam("fromTime") String fromTime) {
         List<Long> regions = weatherDAO.recentRegions(getDateFromString(fromTime));
-        System.out.println("!!recentRegions regions :"+regions.size());
+        System.out.println("!!recentRegions regions :" + regions.size());
         return regions;
     }
 

@@ -16,16 +16,15 @@ import uk.commonline.weather.model.Location;
 import uk.commonline.weather.persist.LocationDAO;
 
 /**
- * Location controller.
+ * @author Jim O'Mulloy
  * 
+ *         WTW Base Location DAO JAXRS Service
+ *
  */
 @Path("/location")
 @Component
 @Transactional
-public class LocationDataRestService extends AbstractCrudService<Location> /*
-                                                                            * implements
-                                                                            * LocationDataService
-                                                                            */{
+public class LocationDataRestService extends AbstractCrudService<Location> {
 
     @Autowired
     LocationDAO locationDAO;
