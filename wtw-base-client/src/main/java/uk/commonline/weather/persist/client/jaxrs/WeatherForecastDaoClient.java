@@ -39,7 +39,7 @@ public class WeatherForecastDaoClient extends AbstractCrudClient<WeatherForecast
     public List<WeatherForecast> getRange(final long region, final Date fromTime, final int hours, final int count) {
         GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
         };
-        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class).target(getRestClient().createUrl(getPath()))
+        WebTarget target = getRestClient().getClient().target(getRestClient().createUrl(getPath()))
                 .path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}");
         target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime)).resolveTemplate("hours", hours)
                 .resolveTemplate("count", count);
@@ -51,7 +51,7 @@ public class WeatherForecastDaoClient extends AbstractCrudClient<WeatherForecast
     public List<WeatherForecast> getRetro(final long region, final Date fromTime, final Date forecastTime, final int hours, final int count) {
         GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
         };
-        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class).target(getRestClient().createUrl(getPath()))
+        WebTarget target = getRestClient().getClient().target(getRestClient().createUrl(getPath()))
                 .path("retro/region/{region}/fromTime/{fromTime}/forecastTime/{forecastTime}/hours/{hours}/count/{count}");
         target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime))
                 .resolveTemplate("forecastTime", getStringFromDate(forecastTime)).resolveTemplate("hours", hours).resolveTemplate("count", count);
@@ -76,7 +76,7 @@ public class WeatherForecastDaoClient extends AbstractCrudClient<WeatherForecast
     public List<WeatherForecast> recentForRegion(long region) {
         GenericType<List<WeatherForecast>> list = new GenericType<List<WeatherForecast>>() {
         };
-        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class).target(getRestClient().createUrl(getPath()))
+        WebTarget target = getRestClient().getClient().target(getRestClient().createUrl(getPath()))
                 .path("recent/region/{region}");
         List<WeatherForecast> entities = target.resolveTemplate("region", region).request(MediaType.APPLICATION_JSON).get(list);
         return entities;
@@ -85,9 +85,9 @@ public class WeatherForecastDaoClient extends AbstractCrudClient<WeatherForecast
     @Override
     public void setRestClient(RestClient restClient) {
         super.setRestClient(restClient);
-        restClient.registerProvider(WeatherListMessenger.class);
-        restClient.registerProvider(WeatherReportMessenger.class);
-        restClient.registerProvider(WeatherMessenger.class);
-        restClient.resetClient();
+        //restClient.registerProvider(WeatherListMessenger.class);
+        //restClient.registerProvider(WeatherReportMessenger.class);
+        //restClient.registerProvider(WeatherMessenger.class);
+        //restClient.resetClient();
     }
 }

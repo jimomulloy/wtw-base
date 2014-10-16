@@ -38,7 +38,7 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     public List<Weather> getRange(final long region, final Date fromTime, final int hours, final int count) {
         GenericType<List<Weather>> list = new GenericType<List<Weather>>() {
         };
-        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class).target(getRestClient().createUrl(getPath()))
+        WebTarget target = getRestClient().getClient().target(getRestClient().createUrl(getPath()))
                 .path("range/region/{region}/fromTime/{fromTime}/hours/{hours}/count/{count}");
         target = target.resolveTemplate("region", region).resolveTemplate("fromTime", getStringFromDate(fromTime)).resolveTemplate("hours", hours)
                 .resolveTemplate("count", count);
@@ -60,7 +60,7 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     public List<Weather> recentForRegion(long region) {
         GenericType<List<Weather>> list = new GenericType<List<Weather>>() {
         };
-        WebTarget target = getRestClient().getClient().register(WeatherListMessenger.class).target(getRestClient().createUrl(getPath()))
+        WebTarget target = getRestClient().getClient().target(getRestClient().createUrl(getPath()))
                 .path("recent/region/{region}");
         List<Weather> entities = target.resolveTemplate("region", region).request(MediaType.APPLICATION_JSON).get(list);
         return entities;
@@ -70,7 +70,7 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     public List<Long> recentRegions(Date fromTime) {
         GenericType<List<Long>> list = new GenericType<List<Long>>() {
         };
-        WebTarget target = getRestClient().getClient().register(LongListMessenger.class).target(getRestClient().createUrl(getPath()))
+        WebTarget target = getRestClient().getClient().target(getRestClient().createUrl(getPath()))
                 .path("regions/fromTime/{fromTime}");
         List<Long> entities = target.resolveTemplate("fromTime", getStringFromDate(fromTime)).request(MediaType.APPLICATION_JSON).get(list);
         return entities;
@@ -79,10 +79,10 @@ public class WeatherDaoClient extends AbstractCrudClient<Weather> implements Wea
     @Override
     public void setRestClient(RestClient restClient) {
         super.setRestClient(restClient);
-        restClient.registerProvider(WeatherListMessenger.class);
-        restClient.registerProvider(WeatherReportMessenger.class);
-        restClient.registerProvider(WeatherMessenger.class);
-        restClient.registerProvider(LongListMessenger.class);
-        restClient.resetClient();
+        //restClient.registerProvider(WeatherListMessenger.class);
+        //restClient.registerProvider(WeatherReportMessenger.class);
+        //restClient.registerProvider(WeatherMessenger.class);
+       // restClient.registerProvider(LongListMessenger.class);
+        //restClient.resetClient();
     }
 }
